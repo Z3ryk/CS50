@@ -3,25 +3,34 @@
 
 int main(void)
 {
-    int s;
+    int height;
+
     do
     {
-        s = get_int("Height: ");
+        height = get_int("Height: ");
     }
-    while (s <= 0);
-    for (int i = 1; i <= s; i++)
-    {
-        int space = i <= s ? s - i : 0;
+    while (height <= 0);
 
-        for (int j = 0; j < space; j++)
+    for (int i = 0; i < height; i++)
+    {
+
+        if (i <= height)
         {
-            printf(" ");
+
+            char space = ' ';
+            char hash = '#';
+
+            for (int j = 0; j < height - i - 1; j++)
+            {
+                printf("%c", space);
+            }
+
+            for (int h = 0; h <= i; h++)
+            {
+                printf("%c", hash);
+            }
         }
-        for (int resh = 1; resh <= i; resh++)
-        {
-            printf("#");
-        }
+
         printf("\n");
     }
 }
-
