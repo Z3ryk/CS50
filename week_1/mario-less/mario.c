@@ -4,6 +4,8 @@
 int main(void)
 {
     int height;
+    char space = ' ';
+    char hash = '#';
 
     do
     {
@@ -16,9 +18,6 @@ int main(void)
 
         if (i <= height)
         {
-
-            char space = ' ';
-            char hash = '#';
 
             for (int j = 0; j < height - i - 1; j++)
             {
