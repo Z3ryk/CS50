@@ -5,7 +5,7 @@ int main(void)
 {
     int height;
     char space = ' ';
-    char hash = '#';
+    char hash ='#';
 
     do
     {
@@ -15,10 +15,6 @@ int main(void)
 
     for (int i = 0; i < height; i++)
     {
-
-        if (i <= height)
-        {
-
             for (int j = 0; j < height - i - 1; j++)
             {
                 printf("%c", space);
@@ -28,8 +24,7 @@ int main(void)
             {
                 printf("%c", hash);
             }
-        }
 
-        printf("\n");
+            printf("\n");
     }
 }
