@@ -4,8 +4,8 @@
 int main(void)
 {
     int height;
-    char space = ' ';
-    char hash = '#';
+    const char space = ' ';
+    const char hash = '#';
 
     do
     {
