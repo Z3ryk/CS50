@@ -1,12 +1,11 @@
 #include <cs50.h>
 #include <stdio.h>
 
-
 int main(void)
 {
     int height;
-    char space =' ';
-    char hash ='#';
+    const char space = ' ';
+    const char hash = '#';
 
     do
     {
