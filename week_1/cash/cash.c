@@ -3,49 +3,45 @@
 
 int main(void)
 {
-    int a = 25;
-    int b = 10;
-    int c = 5;
-    int d = 1;
-    int all;
+    int change_owed;
+
     do
     {
-        all = get_int("Change owed: ");
+        change_owed = get_int("Change owed: ");
     }
-    while (all < 0);
+    while (change_owed < 0);
 
-    int cycle25 = 0;
-    int cycle10 = 0;
-    int cycle5 = 0;
-    int cycle1 = 0;
+    int number_of_quarters = 0; // 25 cents
+    int number_of_dimes = 0;    // 10 cents
+    int number_of_nickels = 0;  // 5 cents
+    int number_of_pennies = 0;  // 1 cent
 
-    for (int i = 25; i <= all; i += 25) // 25 cent
+    while (25 <= change_owed)
     {
-        cycle25++;
+        change_owed = change_owed - 25;
+        number_of_quarters++;
     }
 
-    int all25 = all - cycle25 * 25;
-
-    for (int i = 10; i <= all25; i += 10) // 10 cent
+    while (10 <= change_owed)
     {
-        cycle10++;
+        change_owed = change_owed - 10;
+        number_of_dimes++;
     }
 
-    int all10 = all25 - cycle10 * 10;
-
-    for (int i = 5; i <= all10; i += 5) // 5 cent
+    while (5 <= change_owed)
     {
-        cycle5++;
+        change_owed = change_owed - 5;
+        number_of_nickels++;
     }
 
-    int all5 = all10 - cycle5 * 5;
-
-    for (int i = 1; i <= all5; i++) // 1 cent
+    while (1 <= change_owed)
     {
-        cycle1++;
+        change_owed = change_owed - 1;
+        number_of_pennies++;
     }
 
-    int cycle = cycle25 + cycle10 + cycle5 + cycle1; // Сумма монет
+    int total_number_of_coins =
+        number_of_quarters + number_of_dimes + number_of_nickels + number_of_pennies; // Сумма монет
 
-    printf("%i\n", cycle);
+    printf("%i\n", total_number_of_coins);
 }
