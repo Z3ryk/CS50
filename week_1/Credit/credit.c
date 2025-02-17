@@ -3,95 +3,43 @@
 
 int main(void)
 {
-
+    long card_number;
     int count = 0;
-    long card;
-
     do
     {
-        card = get_long("Number: ");
+        card_number = get_long("Number: ");
     }
-    while (card < 0);
+    while (card_number < 0);
 
-    long check = card;
+    int val[] = {0, 2, 4, 6, 8, 1, 3, 5, 7, 9};
+    int check_sum = 0;
 
-    int card1 = (((card % 100) / 10) * 2); // Умножение цифр начиная предпоследней на 2
-    int card2 = (((card % 10000) / 1000) * 2);
-    int card3 = (((card % 1000000) / 100000) * 2);
-    int card4 = (((card % 100000000) / 10000000) * 2);
-    int card5 = (((card % 10000000000) / 1000000000) * 2);
-    int card6 = (((card % 1000000000000) / 100000000000) * 2);
-    int card7 = (((card % 100000000000000) / 10000000000000) * 2);
-    int card8 = (((card % 10000000000000000) / 1000000000000000) * 2);
+    for (long n = card_number; n; n /= 100)
+    {
+        check_sum += n % 10 + val[n / 10 % 10];
+    }
 
-    card1 = (card1 % 100 / 10) + (card1 % 10); // Сложение цифр вместе
-    card2 = (card2 % 100 / 10) + (card2 % 10);
-    card3 = (card3 % 100 / 10) + (card3 % 10);
-    card4 = (card4 % 100 / 10) + (card4 % 10);
-    card5 = (card5 % 100 / 10) + (card5 % 10);
-    card6 = (card6 % 100 / 10) + (card6 % 10);
-    card7 = (card7 % 100 / 10) + (card7 % 10);
-    card8 = (card8 % 100 / 10) + (card8 % 10);
-
-    int card_no = card1 + card2 + card3 + card4 + card5 + card6 + card7 + card8;
-
-    int non_mult =
-        (card % 10) + ((card % 1000) / 100) + ((card % 100000) / 10000) +
-        ((card % 10000000) / 1000000) + ((card % 1000000000) / 100000000) +
-        ((card % 100000000000) / 10000000000) + ((card % 10000000000000) / 1000000000000) +
-        ((card % 1000000000000000) / 100000000000000); // Сложение чисел которые не умножались
-
-    int check_sum = card_no + non_mult; // Проверочная сумма умноженных и не умноженных чисел
-
-    if ((check_sum % 10) != 0) // Проверка заканичивается ли сумма на 0 в конце
+    if (check_sum % 10 != 0) // Проверка на 0
     {
         printf("INVALID\n");
         return 0;
     }
 
-    while (check > 0) // Проверка на кол-во цифр в номере карты
+    while (card_number >= 100) // Ловим первые две цифры карты и считаем кол-во цифр в карте
     {
-        check = check / 10; //
-        count++;            //
+        card_number /= 10;
+        count++;
     }
 
-    if (count != 15 && count != 13 &&
-        count != 16) // Проверка на то чтобы в номере карты было 15,13,16 цифр.
+    if (count < 11) // проверка на кол-во цифр в карте
     {
         printf("INVALID\n");
         return 0;
     }
 
-    long MC = card / 100000000000000;    // проверка на первые две цифры MASTER
-    long AMEX = card / 10000000000000;   // проверка на первые две цифры AMERICAN EXPRESS
-    long Visa = card / 1000000000000000; // проверка на первую цифру VISA
-    long Visa_13 = card / 1000000000000; // проверка на первую цифру VISA 13-значная карта
-
-    if (count == 15)
+    if (count == 11) //  Проверка на 13-значную визу
     {
-        if (AMEX != 34 && AMEX != 37) // Проверка на первые две цифры чтобы были 34 или 37
-        {
-            printf("INVALID\n");
-            return 0;
-        }
-
-        else
-        {
-            printf("AMEX\n");
-            return 0;
-        }
-    }
-
-    if (count == 16)
-    {
-        if (MC == 51 || MC == 52 || MC == 53 || MC == 54 ||
-            MC == 55) // Проверка на Master_card 51, 52, 53, 54, 55.
-        {
-            printf("MASTERCARD\n");
-            return 0;
-        }
-
-        else if (Visa == 4) // Проверка на Visa 4
+        if (card_number / 10 == 4)
         {
             printf("VISA\n");
             return 0;
@@ -104,15 +52,40 @@ int main(void)
         }
     }
 
-    if (count == 13 && Visa_13 == 4) // Вторая проверка на VISA если карта 13-значная
+    if (count == 13) // Проверка на AMEX
     {
-        printf("VISA\n");
-        return 0;
+        if (card_number == 34 || card_number == 37)
+        {
+            printf("AMEX\n");
+            return 0;
+        }
+
+        else
+        {
+            printf("INVALID\n");
+            return 0;
+        }
     }
 
-    else
+    if (count == 14) // Проверка на Мастеркард и Визу
     {
-        printf("INVALID\n");
-        return 0;
+        if (card_number == 51 || card_number == 52 || card_number == 53 || card_number == 54 ||
+            card_number == 55)
+        {
+            printf("MASTERCARD\n");
+            return 0;
+        }
+
+        else if (card_number / 10 == 4)
+        {
+            printf("VISA\n");
+            return 0;
+        }
+
+        else
+        {
+            printf("INVALID\n");
+            return 0;
+        }
     }
 }
