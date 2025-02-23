@@ -18,25 +18,25 @@ int main(void)
 
     while (25 <= change_owed)
     {
-        change_owed = change_owed - 25;
+        change_owed -= 25;
         number_of_quarters++;
     }
 
     while (10 <= change_owed)
     {
-        change_owed = change_owed - 10;
+        change_owed -= 10;
         number_of_dimes++;
     }
 
     while (5 <= change_owed)
     {
-        change_owed = change_owed - 5;
+        change_owed -= 5;
         number_of_nickels++;
     }
 
     while (1 <= change_owed)
     {
-        change_owed = change_owed - 1;
+        change_owed -= 1;
         number_of_pennies++;
     }
 
