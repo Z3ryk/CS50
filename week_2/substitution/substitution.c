@@ -10,60 +10,54 @@ const string error_message = "Usage: ./substitution key\n";
 // Переменная с кол-вом букв в алфавите
 const int number_of_letters = 26;
 
+// Печать об ошибке
+int print_error()
+{
+    printf("%s", error_message);
+    return 1;
+}
+
 int main(int argc, string argv[])
 {
     // Проверка на количество аргументов
     if (argc != 2)
     {
-        printf("%s", error_message);
+        return print_error();
         return 1;
     }
 
     // Присваеваем key значение аргумента
     string key = argv[1];
 
-    // Длину аргумента записываем в переменную
-    int argument_length = strlen(key);
-
     // Проверка на количество символов в аргументе (ключ)
-    if (argument_length != number_of_letters)
+    if (strlen(key) != number_of_letters)
     {
-        printf("%s", error_message);
+        return print_error();
         return 1;
     }
 
-    // Проверка является ли аргумент буквенным
-    for (int i = 0; i < argument_length; i++)
-    {
-        if (!isalpha(key[i]))
-        {
-            printf("%s", error_message);
-            return 1;
-        }
-    }
-
-    // Меняем в key буквы на единый регистр для проверки смешанного регистра
-    for (int i = 0; i < number_of_letters; i++)
-    {
-        key[i] = toupper(key[i]);
-    }
-
-    // Проверка на дубликаты в ключе
     bool seen[26] = {false};
 
+    // Проверки
     for (int i = 0; i < number_of_letters; i++)
     {
-        int index = key[i] - 'A';
-
-        if (seen[index] == false)
+        // Проверка является ли аргумент буквенным
+        if (!isalpha(key[i]))
         {
-            seen[index] = true;
+            return print_error();
+            return 1;
         }
+        // Проверки на совпадение буквенных символов в ключе
+        int index = toupper(key[i]) - 'A';
 
+        if (seen[index] == true)
+        {
+            return print_error();
+            return 1;
+        }
         else
         {
-            printf("%s", error_message);
-            return 1;
+            seen[index] = true;
         }
     }
 
@@ -73,32 +67,34 @@ int main(int argc, string argv[])
     printf("ciphertext: ");
 
     // Шифрование текста
-    int text_length = strlen(text);
-
-    for (int i = 0; i < text_length; i++)
+    for (int i = 0; text[i] != '\0'; i++)
     {
+        char character = text[i];
+
         // Выводит текущий элемент массива если он не является буквенным
-        if (!isalpha(text[i]))
+        if (!isalpha(character))
         {
-            printf("%c", text[i]);
+            printf("%c", character);
             continue;
         }
 
         // Печать строчных букв
-        if (islower(text[i]))
+        int index;
+        if (islower(character))
         {
-            int index = text[i] - 'a';
-            printf("%c", key[index] + 32);
+            index = character - 'a';
+            printf("%c", tolower(key[index]));
         }
 
         // Печать прописных букв
         else
         {
-            int index = text[i] - 'A';
-            printf("%c", key[index]);
+            index = character - 'A';
+            printf("%c", toupper(key[index]));
         }
     }
 
     printf("\n");
+
     return 0;
 }
