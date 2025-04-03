@@ -23,7 +23,6 @@ int main(int argc, string argv[])
     if (argc != 2)
     {
         return print_error();
-        return 1;
     }
 
     // Присваеваем key значение аргумента
@@ -33,7 +32,6 @@ int main(int argc, string argv[])
     if (strlen(key) != number_of_letters)
     {
         return print_error();
-        return 1;
     }
 
     bool seen[26] = {false};
@@ -45,7 +43,6 @@ int main(int argc, string argv[])
         if (!isalpha(key[i]))
         {
             return print_error();
-            return 1;
         }
         // Проверки на совпадение буквенных символов в ключе
         int index = toupper(key[i]) - 'A';
@@ -53,7 +50,6 @@ int main(int argc, string argv[])
         if (seen[index] == true)
         {
             return print_error();
-            return 1;
         }
         else
         {
