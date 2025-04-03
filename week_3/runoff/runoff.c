@@ -134,11 +134,10 @@ bool vote(int voter, int rank, string name)
         if (strcmp(name, candidates[i].name) == 0)
         {
             preferences[voter][rank] = i;
-            exist = true;
-            break;
+            return true;
         }
     }
-    return exist;
+    return false;
 }
 
 // Подсчет голосов для невыбывших кандидатов
@@ -148,14 +147,14 @@ void tabulate(void)
     {
         for (int j = 0; j < candidate_count; j++)
         {
-            if (candidates[preferences[i][j]].eliminated == false)
+            int candidate_index = preferences[i][j];
+            if (candidates[candidate_index].eliminated == false)
             {
-                candidates[preferences[i][j]].votes += 1;
+                candidates[candidate_index].votes++;
                 break;
             }
         }
     }
-    return;
 }
 
 // Печать победителя
@@ -163,11 +162,9 @@ bool print_winner(void)
 {
     for (int i = 0; i < candidate_count; i++)
     {
-        string win = candidates[i].name;
-
         if (candidates[i].votes > voter_count / 2)
         {
-            printf("%s\n", win);
+            printf("%s\n", candidates[i].name);
             return true;
         }
     }
@@ -207,9 +204,10 @@ bool is_tie(int min)
 void eliminate(int min)
 {
     for (int i = 0; i < candidate_count; i++)
+    {
         if (candidates[i].votes == min)
         {
             candidates[i].eliminated = true;
         }
-    return;
+    }
 }
