@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include <math.h>
 
 // Convert image to grayscale
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
@@ -7,13 +8,18 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int j = 0; j < width; j++)
         {
-            int average_pixel_value =
-                (image[i][j].rgbtRed + image[i][j].rgbtGreen + image[i][j].rgbtBlue) / 3;
-            image[i][j].rgbtRed = average_pixel_value;
-            image[i][j].rgbtGreen = average_pixel_value;
-            image[i][j].rgbtBlue = average_pixel_value;
+            int blue = image[i][j].rgbtBlue;
+            int green = image[i][j].rgbtGreen;
+            int red = image[i][j].rgbtRed;
+
+            int average = round((float) (blue + green + red) / 3);
+
+            image[i][j].rgbtBlue = average;
+            image[i][j].rgbtGreen = average;
+            image[i][j].rgbtRed = average;
         }
     }
+
     return;
 }
 
@@ -28,23 +34,28 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
             int originalGreen = image[i][j].rgbtGreen;
             int originalBlue = image[i][j].rgbtBlue;
 
-            int sepiaRed = .393 * originalRed + .769 * originalGreen + .189 * originalBlue;
-            int sepiaGreen = .349 * originalRed + .686 * originalGreen + .168 * originalBlue;
-            int sepiaBlue = .272 * originalRed + .534 * originalGreen + .131 * originalBlue;
+            int sepiaRed =
+                round(0.393 * originalRed + 0.769 * originalGreen + 0.189 * originalBlue);
+            int sepiaGreen =
+                round(0.349 * originalRed + 0.686 * originalGreen + 0.168 * originalBlue);
+            int sepiaBlue =
+                round(0.272 * originalRed + 0.534 * originalGreen + 0.131 * originalBlue);
 
-            if (sepiaRed > 255)
+            const int max_value = 255;
+
+            if (sepiaRed > max_value)
             {
-                sepiaRed = 255;
+                sepiaRed = max_value;
             }
 
-            if (sepiaGreen > 255)
+            if (sepiaGreen > max_value)
             {
-                sepiaGreen = 255;
+                sepiaGreen = max_value;
             }
 
-            if (sepiaBlue > 255)
+            if (sepiaBlue > max_value)
             {
-                sepiaBlue = 255;
+                sepiaBlue = max_value;
             }
 
             image[i][j].rgbtRed = sepiaRed;
@@ -66,11 +77,14 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
         int left = 0;
         int right = width - 1;
 
-        for (; left < right; left++, right--)
+        while (left < right)
         {
             RGBTRIPLE tmp = row[left];
             row[left] = row[right];
             row[right] = tmp;
+
+            left++;
+            right--;
         }
     }
 
@@ -112,19 +126,19 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     if (x >= 0 && x < height && y >= 0 && y < width)
                     {
                         // Добавляем значения цветов соседних пикселей
-                        redSum += original[x][y].rgbtRed;
-                        greenSum += original[x][y].rgbtGreen;
-                        blueSum += original[x][y].rgbtBlue;
+                        redSum += round((float) original[x][y].rgbtRed);
+                        greenSum += round((float) original[x][y].rgbtGreen);
+                        blueSum += round((float) original[x][y].rgbtBlue);
                         count++;
                     }
                 }
             }
-
             // Вычисляем среднее значение для каждого канала
-            image[i][j].rgbtRed = redSum / count;
-            image[i][j].rgbtGreen = greenSum / count;
-            image[i][j].rgbtBlue = blueSum / count;
+            image[i][j].rgbtRed = round((float) redSum / count);
+            image[i][j].rgbtGreen = round((float) greenSum / count);
+            image[i][j].rgbtBlue = round((float) blueSum / count);
         }
     }
+
     return;
 }
