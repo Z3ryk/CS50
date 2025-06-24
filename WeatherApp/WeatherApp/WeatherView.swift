@@ -36,7 +36,19 @@ class WeatherView: UIView {
     
     private func setupView() {
         backgroundColor = .systemBackground
-        
+        if let lastCity = UserDefaults.standard.string(forKey: "lastCity") {
+            CityAPI.searchCities(cityName: lastCity) { [weak self] locations in
+                guard let self = self, let location = locations.first else { return }
+                DispatchQueue.main.async {
+                    self.updateWeatherUI(with: location)
+                    if self.statusWeatherLabel.text == "Rain" {
+                        self.backgroundImageView.image = UIImage(named: "Dark Clouds")
+                    } else {
+                        self.backgroundImageView.image = UIImage(named: "Clouds")
+                    }
+                }
+            }
+        }
     }
     
     private func setupUI() {
@@ -110,31 +122,38 @@ class WeatherView: UIView {
             UIView.animate(withDuration: 0.1) {
                 self.buttonSearch.transform = .identity
             }
-
+            
             let searchVC = CitySearchViewController()
             searchVC.onCitySelected = { [weak self] location in
                 guard let self = self else { return }
                 self.cityLabel.text = location.name
-                locationData["lat"] = Double(round(location.lat * 100) / 100)
-                locationData["lon"] = Double(round(location.lon * 100) / 100)
-                locationData["state"] = location.state
-                locationData["country"] = location.country
-                locationData["nameLocation"] = location.name
-                cityWeather()
-                self.temperatureLabel.text = "\(WeatherData["temp"] ?? 0)°C"
-                self.statusWeatherLabel.text = "\(WeatherData["weatherStatus"] ?? "")"
-                self.windSpeedLabel.text = "wind speed: \(WeatherData["windSpeed"] ?? 0) m/s"
-                if statusWeatherLabel.text == "Rain" {
-                    backgroundImageView.image = UIImage(named: "Dark Clouds")
+                self.updateWeatherUI(with: location)
+                if self.statusWeatherLabel.text == "Rain" {
+                    self.backgroundImageView.image = UIImage(named: "Dark Clouds")
                 } else {
-                    backgroundImageView.image = UIImage(named: "Clouds")
+                    self.backgroundImageView.image = UIImage(named: "Clouds")
                 }
             }
-
             let nav = UINavigationController(rootViewController: searchVC)
             self.viewController?.present(nav, animated: true)
         })
     }
+    
+    private func updateWeatherUI(with location: Location) {
+        UserDefaults.standard.set(location.name, forKey: "lastCity")
+        locationData["lat"] = Double(round(location.lat * 100) / 100)
+        locationData["lon"] = Double(round(location.lon * 100) / 100)
+        locationData["state"] = location.state
+        locationData["country"] = location.country
+        locationData["nameLocation"] = location.name
+        
+        cityWeather()
+        self.temperatureLabel.text = "\(WeatherData["temp"] ?? 0)°C"
+        self.statusWeatherLabel.text = "\(WeatherData["weatherStatus"] ?? "")"
+        self.windSpeedLabel.text = "wind speed: \(WeatherData["windSpeed"] ?? 0) m/s"
+        self.cityLabel.text = location.name
+    }
+    
     
     private func addSubviews () {
         addSubview(backgroundImageView)
@@ -149,3 +168,4 @@ class WeatherView: UIView {
 #Preview(){
     WeatherView()
 }
+

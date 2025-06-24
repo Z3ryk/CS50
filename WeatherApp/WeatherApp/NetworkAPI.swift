@@ -6,6 +6,8 @@
 import UIKit
 import Foundation
 
+var filteredCities: [Location] = []
+
 struct Location: Codable {
     let lat: Double
     let lon: Double
@@ -18,65 +20,26 @@ var locationData = ["lon": 0, "lat": 0, "state": "0", "country": "0", "nameLocat
 
 private let apiKey = "f6f5561ca655cbfb4e43d58a28e47aae"
 
+enum CityAPI {
+    static func searchCities(cityName: String, completion: @escaping ([Location]) -> Void) {
+        let urlString = "https://api.openweathermap.org/geo/1.0/direct?q=\(cityName)&limit=5&appid=\(apiKey)"
+        guard let url = URL(string: urlString) else {
+            completion([])
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            guard let data = data,
+                  let cities = try? JSONDecoder().decode([Location].self, from: data) else {
+                completion([])
+                return
+            }
+            completion(cities)
+        }.resume()
+    }
+}
 
 
-//func cityLocation(cityName: String) {
-//    let urlString = "https://api.openweathermap.org/geo/1.0/direct?q=\(cityName)&limit=1&appid=\(apiKey)"
-//    
-//    let semaphore = DispatchSemaphore(value: 0)
-//    
-//    guard let url = URL(string: urlString) else {
-//        print("Invalid URL")
-//        exit(1)
-//    }
-//    
-//    let task = URLSession.shared.dataTask(with: url) { data, response, error in
-//        if let error = error {
-//            print("Error: \(error)")
-//            return
-//        }
-//        
-//        guard let httpResponse = response as? HTTPURLResponse else {
-//            print("No HTTP response")
-//            return
-//        }
-//        
-//        guard httpResponse.statusCode == 200 else {
-//            print("HTTP status code: \(httpResponse.statusCode)")
-//            return
-//        }
-//        
-//        guard let data = data else {
-//            print("No data returned")
-//            return
-//        }
-//        
-//        do {
-//            let locations = try JSONDecoder().decode([Location].self, from: data)
-//            
-//            for location in locations {
-//                print("Город: \(location.name ?? "не найден")")
-//                print("Широта: \(location.lat)")
-//                print("Долгота: \(location.lon)")
-//                print("Штат/регион: \(location.state ?? "неизвестно")")
-//                print("Страна: \(location.country ?? "неизвестно")")
-//                print("-----")
-//                locationData["lat"] = Double(round(location.lat * 100) / 100)
-//                locationData["lon"] = Double(round(location.lon * 100) / 100)
-//                locationData["state"] = location.state
-//                locationData["country"] = location.country
-//                locationData["nameLocation"] = location.name
-//                print(locationData)
-//            }
-//            
-//        } catch {
-//            print("Ошибка парсинга: \(error)")
-//        }
-//        semaphore.signal()
-//    }
-//    task.resume()
-//    semaphore.wait()
-//}
 // MARK: Weather
 
 struct WeatherResponse: Codable {
